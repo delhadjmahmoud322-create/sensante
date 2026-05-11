@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SenSante - Pre-diagnostic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+    <header class="bg-blue-600 text-white py-4 shadow-lg">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-2xl font-bold">SenSante</h1>
+            <p class="text-blue-100 text-sm">Assistant pre-diagnostic medical</p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div id="form-section" class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Symptomes du patient</h2>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                    <input type="number" id="age" 
+                        class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                        placeholder="Ex: 28" min="0" max="120">
+                </div>
+
+                <div class="mb-3">
+                    <label for="sexe" class="block text-sm font-medium text-gray-700 mb-1">Sexe</label>
+                    <select id="sexe" name="sexe" title="Sélectionner le sexe" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="F">Feminin</option>
+                        <option value="M">Masculin</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Temperature (C)</label>
+                    <input type="number" id="temperature" step="0.1" 
+                        class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                        placeholder="Ex: 38.5" min="35" max="42">
+                </div>
+
+                <div class="mb-3">
+                    <label for="tension_sys" class="block text-sm font-medium text-gray-700 mb-1">Tension systolique</label>
+                    <input type="number" id="tension_sys" 
+                        class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                        placeholder="Ex: 120" min="60" max="250">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Symptomes</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="toux" class="rounded text-blue-600 mr-2">
+                            <span class="text-gray-700">Toux</span>
+                        </label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="fatigue" class="rounded text-blue-600 mr-2">
+                            <span class="text-gray-700">Fatigue</span>
+                        </label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="maux_tete" class="rounded text-blue-600 mr-2">
+                            <span class="text-gray-700">Maux de tête</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+                    <select id="region" title="Sélectionnez votre région" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="Dakar">Dakar</option>
+                        <option value="Thies">Thiès</option>
+                        <option value="Saint-Louis">Saint-Louis</option>
+                        <option value="Ziguinchor">Ziguinchor</option>
+                        <option value="Tambacounda">Tambacounda</option>
+                        <option value="Kaolack">Kaolack</option>
+                        <option value="Diourbel">Diourbel</option>
+                        <option value="Fatick">Fatick</option>
+                        <option value="Kolda">Kolda</option>
+                        <option value="Matam">Matam</option>
+                    </select>
+                </div>
+
+                <button onclick="diagnostiquer()" id="btn-diag" 
+                    class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md">
+                    Diagnostiquer
+                </button>
+            </div>
+            </div>
+
+            <div id="result-section">
+                <div class="bg-white rounded-xl shadow-md p-6 text-center text-gray-400">
+                    <p class="text-4xl mb-3">&#129658;</p>
+                    <p class="font-medium">Remplissez le formulaire</p>
+                    <p class="text-sm mt-1">puis cliquez sur Diagnostiquer</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ---- EXERCICE 2 : tableau historique des consultations ---- -->
+        <div id="historique-section" class="mt-8 hidden">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">📋 Historique des consultations</h2>
+                    <button onclick="effacerHistorique()"
+                        class="text-xs text-red-400 hover:text-red-600 underline transition">
+                        Effacer
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-2 px-3 text-gray-500 font-medium">#</th>
+                                <th class="text-left py-2 px-3 text-gray-500 font-medium">Âge / Sexe</th>
+                                <th class="text-left py-2 px-3 text-gray-500 font-medium">Région</th>
+                                <th class="text-left py-2 px-3 text-gray-500 font-medium">Diagnostic</th>
+                                <th class="text-left py-2 px-3 text-gray-500 font-medium">Probabilité</th>
+                                <th class="text-left py-2 px-3 text-gray-500 font-medium">Heure</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historique-body">
+                            <!-- Lignes ajoutées dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- ---- FIN EXERCICE 2 ---- -->
+
+    </main>
+
+    <footer class="text-center text-gray-400 text-sm py-4">
+        SenSante v0.3 - ESP / UCAD - L2 GLSI 2026
+    </footer>
+
+    <script>
+        const API_URL = "http://localhost:8000";
+
+        // ---- EXERCICE 1 : icônes par diagnostic ----
+        const icones = {
+            palu:   "🦟",
+            grippe: "🤧",
+            typh:   "🌡️",
+            sain:   "✅"
+        };
+        // ---- FIN EXERCICE 1 ----
+
+        // ---- EXERCICE 2 : tableau historique (max 5 entrées) ----
+        const historique = [];
+        // ---- FIN EXERCICE 2 ----
+
+        async function diagnostiquer() {
+            const patient = {
+                age: parseInt(document.getElementById("age").value),
+                sexe: document.getElementById("sexe").value,
+                temperature: parseFloat(document.getElementById("temperature").value),
+                tension_sys: parseInt(document.getElementById("tension_sys").value),
+                toux: document.getElementById("toux").checked,
+                fatigue: document.getElementById("fatigue").checked,
+                maux_tete: document.getElementById("maux_tete").checked,
+                region: document.getElementById("region").value
+            };
+
+            if (!patient.age || !patient.temperature || !patient.tension_sys) {
+                afficherErreur("Veuillez remplir tous les champs.");
+                return;
+            }
+
+            afficherChargement();
+
+            try {
+                const response = await fetch(API_URL + "/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(patient)
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail ? JSON.stringify(err.detail) : "Erreur serveur");
+                }
+
+                const resultat = await response.json();
+                afficherResultat(resultat);
+
+                // ---- EXERCICE 2 : ajouter à l'historique après chaque diagnostic ----
+                ajouterHistorique(patient, resultat);
+                // ---- FIN EXERCICE 2 ----
+
+            } catch (error) {
+                afficherErreur("Erreur de connexion : " + error.message);
+            }
+        }
+
+        function afficherChargement() {
+            const section = document.getElementById("result-section");
+            section.innerHTML = `
+                <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p class="text-gray-500">Analyse en cours ...</p>
+                </div>`;
+        }
+
+        function afficherResultat(r) {
+            const couleurs = {
+                palu:   { bg: "bg-red-100",    text: "text-red-800",    bar: "bg-red-500",    badge: "bg-red-500"    },
+                grippe: { bg: "bg-orange-100", text: "text-orange-800", bar: "bg-orange-500", badge: "bg-orange-500" },
+                typh:   { bg: "bg-yellow-100", text: "text-yellow-800", bar: "bg-yellow-500", badge: "bg-yellow-500" },
+                sain:   { bg: "bg-green-100",  text: "text-green-800",  bar: "bg-green-500",  badge: "bg-green-500"  }
+            };
+
+            const c = couleurs[r.diagnostic] || couleurs["sain"];
+
+            // ---- EXERCICE 1 : récupérer l'icône du diagnostic ----
+            const ico = icones[r.diagnostic] || "🩺";
+            // ---- FIN EXERCICE 1 ----
+
+            const pct = Math.round(r.probabilite * 100);
+            const section = document.getElementById("result-section");
+
+            section.innerHTML = `
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Resultat</h2>
+                    <div class="${c.bg} rounded-lg p-4 mb-4">
+                        <p class="text-sm text-gray-600">Diagnostic :</p>
+                        <p class="text-2xl font-bold ${c.text} uppercase mt-1">
+                            <span class="mr-2">${ico}</span>${r.diagnostic}
+                        </p>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm text-gray-600">Probabilite</span>
+                            <span class="text-sm font-bold ${c.text}">${pct}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="${c.bar} h-3 rounded-full transition-all duration-500" 
+                                 style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="${c.badge} text-white text-xs px-2 py-1 rounded-full">
+                            ${r.confiance}
+                        </span>
+                        <span class="text-sm text-gray-600">confiance</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-sm text-gray-700">${r.message}</p>
+                    </div>
+                </div>`;
+        }
+
+        function afficherErreur(msg) {
+            const section = document.getElementById("result-section");
+            section.innerHTML = `
+                <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                    <p class="text-red-700 font-medium">${msg}</p>
+                    <p class="text-red-500 text-sm mt-2">Verifiez votre connexion et reessayez.</p>
+                </div>`;
+        }
+
+        // ---- EXERCICE 2 : fonctions historique ----
+        function ajouterHistorique(patient, resultat) {
+            const maintenant = new Date().toLocaleTimeString("fr-FR", {
+                hour: "2-digit", minute: "2-digit"
+            });
+
+            historique.unshift({ patient, resultat, heure: maintenant });
+            if (historique.length > 5) historique.pop();
+
+            document.getElementById("historique-section").classList.remove("hidden");
+
+            document.getElementById("historique-body").innerHTML =
+                historique.map((entry, i) => {
+                    const couleurs = {
+                        palu:   { text: "text-red-700",    bar: "bg-red-500"    },
+                        grippe: { text: "text-orange-700", bar: "bg-orange-500" },
+                        typh:   { text: "text-yellow-700", bar: "bg-yellow-500" },
+                        sain:   { text: "text-green-700",  bar: "bg-green-500"  }
+                    };
+                    const ec  = couleurs[entry.resultat.diagnostic] || couleurs["sain"];
+                    const eico = icones[entry.resultat.diagnostic] || "🩺";
+                    const epct = Math.round(entry.resultat.probabilite * 100);
+                    return `
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <td class="py-2 px-3 text-gray-400">${i + 1}</td>
+                            <td class="py-2 px-3 text-gray-700">${entry.patient.age} ans / ${entry.patient.sexe}</td>
+                            <td class="py-2 px-3 text-gray-700">${entry.patient.region}</td>
+                            <td class="py-2 px-3 font-semibold ${ec.text}">
+                                ${eico} ${entry.resultat.diagnostic.toUpperCase()}
+                            </td>
+                            <td class="py-2 px-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="${ec.bar} h-2 rounded-full" style="width:${epct}%"></div>
+                                    </div>
+                                    <span class="text-xs text-gray-600">${epct}%</span>
+                                </div>
+                            </td>
+                            <td class="py-2 px-3 text-gray-400 text-xs">${entry.heure}</td>
+                        </tr>`;
+                }).join("");
+        }
+
+        function effacerHistorique() {
+            historique.length = 0;
+            document.getElementById("historique-section").classList.add("hidden");
+            document.getElementById("historique-body").innerHTML = "";
+        }
+        // ---- FIN EXERCICE 2 ----
+
+    </script>
+
+</body>
+</html>

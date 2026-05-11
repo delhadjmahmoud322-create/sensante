@@ -1,6 +1,7 @@
 # api/main.py
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
+from fastapi.middleware.cors import CORSMiddleware  # Ajout de l'import
 import joblib
 import numpy as np
 
@@ -25,6 +26,17 @@ app = FastAPI(
     description="Assistant pre-diagnostic medical pour le Senegal",
     version="0.2.0"
 )
+
+# --- Configuration CORS ---
+# Autoriser les requetes depuis le frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # En dev : tout accepter
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# ---------------------------
 
 print("Chargement du modele...")
 model = joblib.load("models/model.pkl")
@@ -56,7 +68,7 @@ def predict(patient: PatientInput):
         int(patient.fatigue), int(patient.maux_tete),
         region_enc
     ]])
-
+    
     diagnostic = model.predict(features)[0]
     proba_max = float(model.predict_proba(features)[0].max())
     confiance = ("haute" if proba_max >= 0.7
